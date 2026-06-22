@@ -2,55 +2,39 @@ package com.example.habittracker
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.*
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
+import com.example.habittracker.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val txtWelcome =
-            findViewById<TextView>(R.id.txtWelcome)
+        // Hide lists for now
+        binding.rvCurrentHabits.visibility = View.GONE
+        binding.rvCompletedHabits.visibility = View.GONE
+        binding.tvCompleted.visibility = View.GONE
 
-        val btnLogout =
-            findViewById<Button>(R.id.btnLogout)
+        // Show empty state
+        binding.tvEmptyCurrent.visibility = View.VISIBLE
 
-        val uid =
-            FirebaseAuth.getInstance()
-                .currentUser!!.uid
-
-        FirebaseDatabase.getInstance()
-            .getReference("users")
-            .child(uid)
-            .get()
-            .addOnSuccessListener {
-
-                val fullname =
-                    it.child("fullname")
-                        .value.toString()
-
-                txtWelcome.text =
-                    "Welcome $fullname"
-
-            }
-
-        btnLogout.setOnClickListener {
-
-            FirebaseAuth.getInstance().signOut()
+        // Statistics page
+        binding.imgStats.setOnClickListener {
 
             startActivity(
                 Intent(
                     this,
-                    LoginActivity::class.java
+                    StatisticsActivity::class.java
                 )
             )
 
-            finish()
         }
+
     }
 }

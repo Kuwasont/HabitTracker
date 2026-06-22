@@ -60,8 +60,8 @@ class LoginActivity : AppCompatActivity() {
 
                         Toast.makeText(
                             this,
-                            "Invalid Login",
-                            Toast.LENGTH_SHORT
+                            it.exception?.message ?: "Login Failed",
+                            Toast.LENGTH_LONG
                         ).show()
                     }
                 }
