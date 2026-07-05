@@ -16,15 +16,15 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Hide lists for now
+
         binding.rvCurrentHabits.visibility = View.GONE
         binding.rvCompletedHabits.visibility = View.GONE
         binding.tvCompleted.visibility = View.GONE
 
-        // Show empty state
+
         binding.tvEmptyCurrent.visibility = View.VISIBLE
 
-        // Statistics page
+
         binding.imgStats.setOnClickListener {
 
             startActivity(

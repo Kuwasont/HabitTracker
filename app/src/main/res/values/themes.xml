@@ -5,5 +5,16 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
+    <style name="ShapeAppearance.HabitTracker.Circle." parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerSize">50%</item>
+    </style>
+
+
+    <style name="CircleFAB" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="shapeAppearance">@style/ShapeAppearance.HabitTracker.Circle.</item>
+        <item name="tint">@color/green</item>
+        <item name="backgroundTint">?attr/colorSecondary</item>
+    </style>
+
     <style name="Theme.HabitTracker" parent="Base.Theme.HabitTracker" />
 </resources>
