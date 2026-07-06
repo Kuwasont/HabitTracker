@@ -42,9 +42,11 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        currentAdapter = HabitAdapter { habit ->
+        currentAdapter = HabitAdapter (
+        onClick = { habit ->
             markHabitDone(habit)
         }
+        )
 
         completedAdapter = HabitAdapter(
             onDoubleClick = { habit ->
@@ -186,19 +188,17 @@ class MainActivity : AppCompatActivity() {
                     holder.name.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
             }
 
-            var lastClickTime = 0L
-
-            holder.itemView.setOnClickListener {
-                val clickTime = System.currentTimeMillis()
-
-                if (clickTime - lastClickTime < 300) {
-                    onDoubleClick?.invoke(habit)
-                } else {
-                    onClick?.invoke(habit)
-                }
-
-                lastClickTime = clickTime
-            }
+           holder.itemView.setOnClickListener{
+               if (isCompleted) {
+                   val clickTime = System.currentTimeMillis()
+                   if (clickTime - holder.lastClickTime < 300) {
+                       onDoubleClick?.invoke(habit)
+                   }
+                   holder.lastClickTime = clickTime
+               }else{
+                   onClick?.invoke(habit)
+               }
+           }
         }
 
         override fun getItemCount(): Int = habits.size
@@ -208,6 +208,7 @@ class MainActivity : AppCompatActivity() {
             val circle: View = itemView.findViewById(R.id.viewCircle)
             val name: TextView = itemView.findViewById(R.id.tvHabitName)
             val progress: TextView = itemView.findViewById(R.id.tvHabitProgress)
+            var lastClickTime: Long = 0
         }
     }
 }

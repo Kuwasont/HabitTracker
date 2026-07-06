@@ -32,7 +32,7 @@
             android:layout_marginEnd="12dp"
             android:text="Read a book"
             android:textColor="#756A67"
-            android:textSize="22sp"
+            android:textSize="17sp"
             android:textStyle="bold"
             android:fontFamily="@font/capriola_regular"
             android:maxLines="1"
