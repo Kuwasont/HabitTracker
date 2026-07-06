@@ -1,47 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardHabit"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
-    android:layout_marginHorizontal="16dp"
-    android:layout_marginVertical="8dp"
-    app:cardBackgroundColor="#A9C8F2"
-    app:cardCornerRadius="18dp"
-    app:cardElevation="8dp">
+    android:layout_height="72dp"
+    android:layout_marginBottom="18dp"
+    app:cardCornerRadius="22dp"
+    app:cardElevation="8dp"
+    app:cardBackgroundColor="#B8E3C4">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        android:paddingStart="24dp"
+        android:paddingEnd="22dp">
+
+        <View
+            android:id="@+id/viewCircle"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/bg_circle_outline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <TextView
             android:id="@+id/tvHabitName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Habit"
-            android:textColor="#555555"
-            android:textSize="24sp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="12dp"
+            android:text="Read a book"
+            android:textColor="#756A67"
+            android:textSize="22sp"
             android:textStyle="bold"
-            android:fontFamily="@font/dongle_bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tvProgress"
+            android:fontFamily="@font/capriola_regular"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintStart_toEndOf="@id/viewCircle"
+            app:layout_constraintEnd_toStartOf="@id/tvHabitProgress"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <TextView
-            android:id="@+id/tvProgress"
+            android:id="@+id/tvHabitProgress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0/0"
-            android:textColor="#777777"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:fontFamily="@font/dongle_bold"
+            android:text="7/15"
+            android:textColor="#8B8B8B"
+            android:textSize="22sp"
+            android:fontFamily="@font/capriola_regular"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -6,12 +6,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.habittracker.databinding.ItemHabitBinding
 
 class HabitAdapter(
-    private var habitList: List<Habit>
+    private var habitList: List<Habit>,
+    private val onHabitDoubleTap: ((Habit) -> Unit)? = null
 ) : RecyclerView.Adapter<HabitAdapter.HabitViewHolder>() {
 
     inner class HabitViewHolder(
         val binding: ItemHabitBinding
-    ) : RecyclerView.ViewHolder(binding.root)
+    ) : RecyclerView.ViewHolder(binding.root) {
+        var lastClickTime: Long = 0
+    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -36,8 +39,18 @@ class HabitAdapter(
 
         holder.binding.tvHabitName.text = habit.habitName
 
-        holder.binding.tvProgress.text =
+        holder.binding.tvHabitProgress.text =
             "${habit.completedHours}/${habit.targetHours}"
+
+        holder.itemView.setOnClickListener {
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - holder.lastClickTime < 300) {
+                if (habit.completedHours >= habit.targetHours) {
+                    onHabitDoubleTap?.invoke(habit)
+                }
+            }
+            holder.lastClickTime = currentTime
+        }
 
     }
 

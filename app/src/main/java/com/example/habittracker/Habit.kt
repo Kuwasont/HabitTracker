@@ -1,6 +1,7 @@
 package com.example.habittracker
 
 data class Habit(
+    var id: String = "",
     var habitName: String = "",
     var targetHours: Int = 0,
     var completedHours: Int = 0,
