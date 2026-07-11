@@ -1,6 +1,12 @@
 package com.example.habittracker
 
+import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
+import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.habittracker.databinding.ActivityAddHabitBinding
@@ -8,15 +14,18 @@ import com.google.android.material.card.MaterialCardView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import android.content.Intent
 
 class AddHabitActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddHabitBinding
-    private var selectedColor = "#B8E3C4"
 
     private val auth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
+
+    private var selectedColor = "#B8E3C4"
+    private var frequency = "Daily"
+
+    private val selectedDays = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +36,116 @@ class AddHabitActivity : AppCompatActivity() {
         binding.imgBack.setOnClickListener {
             finish()
         }
+
+        // -------------------------
+        // Habit Dropdown
+        // -------------------------
+
+        val habits = listOf(
+            "Reading",
+            "Running",
+            "Exercise",
+            "Cycling",
+            "Cooking",
+            "Studying",
+            "Meditation",
+            "Drink Water",
+            "Walking",
+            "Sleep Early"
+        )
+
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_dropdown_item_1line,
+            habits
+        )
+
+        binding.dropHabit.setAdapter(adapter)
+
+        // -------------------------
+        // Frequency
+        // -------------------------
+
+        frequency = "Daily"
+
+        binding.layoutDays.visibility = View.GONE
+        binding.tvWeekDays.visibility = View.GONE
+
+        binding.btnDaily.backgroundTintList =
+            ColorStateList.valueOf(Color.parseColor("#F9F4E7"))
+        binding.btnWeekly.backgroundTintList =
+            ColorStateList.valueOf(Color.parseColor("#C9DFD1"))
+
+        binding.btnDaily.setTextColor(Color.parseColor("#555555"))
+        binding.btnWeekly.setTextColor(Color.parseColor("#8A8A8A"))
+
+        binding.btnDaily.setOnClickListener {
+
+            frequency = "Daily"
+
+            binding.layoutDays.visibility = View.GONE
+            binding.tvWeekDays.visibility = View.GONE
+
+            binding.btnDaily.backgroundTintList =
+                ColorStateList.valueOf(Color.parseColor("#F9F4E7"))
+            binding.btnWeekly.backgroundTintList =
+                ColorStateList.valueOf(Color.parseColor("#C9DFD1"))
+
+            binding.btnDaily.setTextColor(Color.parseColor("#555555"))
+            binding.btnWeekly.setTextColor(Color.parseColor("#8A8A8A"))
+        }
+
+        binding.btnWeekly.setOnClickListener {
+
+            frequency = "Weekly"
+
+            binding.layoutDays.visibility = View.VISIBLE
+            binding.tvWeekDays.visibility = View.VISIBLE
+
+            binding.btnWeekly.backgroundTintList =
+                ColorStateList.valueOf(Color.parseColor("#F9F4E7"))
+            binding.btnDaily.backgroundTintList =
+                ColorStateList.valueOf(Color.parseColor("#C9DFD1"))
+
+            binding.btnWeekly.setTextColor(Color.parseColor("#555555"))
+            binding.btnDaily.setTextColor(Color.parseColor("#8A8A8A"))
+        }
+
+        // -------------------------
+        // Week Days
+        // -------------------------
+
+        binding.tvMon.setOnClickListener {
+            toggleDay(binding.tvMon, "Mon")
+        }
+
+        binding.tvTue.setOnClickListener {
+            toggleDay(binding.tvTue, "Tue")
+        }
+
+        binding.tvWed.setOnClickListener {
+            toggleDay(binding.tvWed, "Wed")
+        }
+
+        binding.tvThu.setOnClickListener {
+            toggleDay(binding.tvThu, "Thu")
+        }
+
+        binding.tvFri.setOnClickListener {
+            toggleDay(binding.tvFri, "Fri")
+        }
+
+        binding.tvSat.setOnClickListener {
+            toggleDay(binding.tvSat, "Sat")
+        }
+
+        binding.tvSun.setOnClickListener {
+            toggleDay(binding.tvSun, "Sun")
+        }
+
+        // -------------------------
+        // Color Picker
+        // -------------------------
 
         highlightSelected(binding.cardGreen)
 
@@ -61,18 +180,11 @@ class AddHabitActivity : AppCompatActivity() {
     }
 
     private fun saveHabitToFirestore() {
-        val name = binding.etHabitName.text.toString().trim()
-        val targetText = binding.etTargetHours.text.toString().trim()
 
-        if (name.isEmpty() || targetText.isEmpty()) {
-            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
-            return
-        }
+        val name = binding.dropHabit.text.toString().trim()
 
-        val targetHours = targetText.toIntOrNull()
-
-        if (targetHours == null || targetHours <= 0) {
-            Toast.makeText(this, "Please enter a valid target", Toast.LENGTH_SHORT).show()
+        if (name.isEmpty()) {
+            Toast.makeText(this, "Please select a habit", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -88,9 +200,11 @@ class AddHabitActivity : AppCompatActivity() {
             "name" to name,
             "habitName" to name,
             "done" to 0,
-            "goal" to targetHours,
-            "targetHours" to targetHours,
+            "goal" to 1,
             "color" to selectedColor,
+            "frequency" to frequency,
+            "days" to selectedDays,
+            "reminder" to binding.swReminder.isChecked,
             "createdAt" to FieldValue.serverTimestamp()
         )
 
@@ -99,22 +213,30 @@ class AddHabitActivity : AppCompatActivity() {
             .collection("habits")
             .add(habit)
             .addOnSuccessListener { documentReference ->
-                documentReference.update("id", documentReference.id)
-                    .addOnCompleteListener {
-                        Toast.makeText(this, "Habit created successfully!", Toast.LENGTH_SHORT).show()
 
-                        val intent = Intent(this, MainActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    }
+                documentReference.update("id", documentReference.id)
+
+                Toast.makeText(
+                    this,
+                    "Habit created successfully!",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
             }
             .addOnFailureListener { e ->
-                android.util.Log.e("AddHabitActivity", "Error adding habit", e)
-                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+
+                Toast.makeText(
+                    this,
+                    "Error: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
     }
 
     private fun highlightSelected(selected: MaterialCardView) {
+
         val cards = listOf(
             binding.cardGreen,
             binding.cardOrange,
@@ -124,11 +246,30 @@ class AddHabitActivity : AppCompatActivity() {
         )
 
         cards.forEach {
+
             it.strokeWidth = 0
             it.strokeColor = getColor(android.R.color.transparent)
         }
 
         selected.strokeWidth = 4
         selected.strokeColor = getColor(R.color.darkgreen)
+    }
+
+    private fun toggleDay(view: TextView, day: String) {
+
+        if (selectedDays.contains(day)) {
+
+            selectedDays.remove(day)
+
+            view.background = getDrawable(R.drawable.bg_day_unselected)
+            view.setTextColor(Color.parseColor("#8DB493"))
+
+        } else {
+
+            selectedDays.add(day)
+
+            view.background = getDrawable(R.drawable.bg_day_selected)
+            view.setTextColor(Color.WHITE)
+        }
     }
 }
