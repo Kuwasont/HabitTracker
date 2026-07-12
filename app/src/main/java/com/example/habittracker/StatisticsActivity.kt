@@ -24,7 +24,8 @@ class StatisticsActivity : AppCompatActivity() {
         val name: String,
         val done: Int,
         val goal: Int,
-        val color: String
+        val color: String,
+        val durationMinutes: Int
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,10 +63,12 @@ class StatisticsActivity : AppCompatActivity() {
                             ?: doc.getString("habitName")
                             ?: "Untitled Habit",
                         done = (doc.getLong("done") ?: 0).toInt(),
-                        goal = (doc.getLong("goal")
-                            ?: doc.getLong("targetHours")
-                            ?: 0).toInt(),
-                        color = doc.getString("color") ?: "#8DB79F"
+                        goal = (doc.getLong("goal") ?: 1).toInt(),
+                        color = doc.getString("color") ?: "#8DB79F",
+
+                        durationMinutes = (
+                                doc.getLong("durationMinutes") ?:0
+                                ).toInt()
                     )
                 }
 
@@ -76,98 +79,121 @@ class StatisticsActivity : AppCompatActivity() {
     private fun updateStatistics(habits: List<Habit>) {
         val txtHours = findViewById<TextView>(R.id.txtHours)
         val txtCompleted = findViewById<TextView>(R.id.txtCompleted)
-        val txtOverall = findViewById<TextView>(R.id.txtOverall)
         val progressList = findViewById<LinearLayout>(R.id.progressList)
 
-        val totalGoal = habits.sumOf { it.goal }
-        val totalDone = habits.sumOf { it.done.coerceAtMost(it.goal) }
-        val remaining = (totalGoal - totalDone).coerceAtLeast(0)
-
-        val completedHabits = habits.count { it.goal > 0 && it.done >= it.goal }
-
-        val remainingPercent = if (totalGoal > 0) {
-            (remaining * 100) / totalGoal
-        } else {
-            0
+        val totalMinutes = habits.sumOf{
+            it.durationMinutes
         }
 
-        txtHours.text = "$remaining/$totalGoal"
+        val completedMinutes =
+            habits.sumOf{ habit ->
+                if(habit.goal > 0){
+                    val completedAmount =
+                        habit.done.coerceIn(0, habit.goal)
+                    (habit.durationMinutes * completedAmount) / habit.goal
+                }else {
+                    0
+                }
+            }
+
+        val remainingMinutes =
+            (totalMinutes - completedMinutes).coerceAtLeast(0)
+
+        val completedHabits =
+            habits.count{
+                it.goal > 0 && it.done >= it.goal
+            }
+
+        txtHours.text = "${formatHours(remainingMinutes)}/" + formatHours(totalMinutes)
+
         txtCompleted.text = "$completedHabits/${habits.size}"
-        txtOverall.text = "$remainingPercent%"
 
         progressList.removeAllViews()
 
         habits.forEach { habit ->
-            val percent = if (habit.goal > 0) {
-                ((habit.done.coerceAtMost(habit.goal) * 100) / habit.goal)
-            } else {
-                0
-            }
-
-            addProgressRow(progressList, habit.name, percent, habit.color)
-        }
-    }
-
-    private fun addProgressRow(
-        parent: LinearLayout,
-        name: String,
-        percent: Int,
-        color: String
-    ) {
-        val row = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            ).apply {
-                topMargin = dp(26)
-            }
-        }
-
-        val habitName = TextView(this).apply {
-            text = name
-            textSize = 20f
-            setTextColor(Color.parseColor("#435B50"))
-            setTypeface(null, Typeface.BOLD)
-            layoutParams = LinearLayout.LayoutParams(
-                0,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                1f
+            addDurationRow(
+                progressList,
+                habit.name,
+                habit.durationMinutes
             )
         }
-
-        val habitPercent = TextView(this).apply {
-            text = "$percent%"
-            textSize = 20f
-            setTextColor(Color.parseColor("#435B50"))
-            setTypeface(null, Typeface.BOLD)
-        }
-
-        row.addView(habitName)
-        row.addView(habitPercent)
-
-        val progressBar = ProgressBar(
-            this,
-            null,
-            android.R.attr.progressBarStyleHorizontal
-        ).apply {
-            max = 100
-            progress = percent
-            progressTintList = ColorStateList.valueOf(Color.parseColor(color))
-            progressBackgroundTintList = ColorStateList.valueOf(Color.parseColor("#E8DDD8"))
-            layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                dp(12)
-            ).apply {
-                topMargin = dp(6)
-            }
-        }
-
-        parent.addView(row)
-        parent.addView(progressBar)
     }
 
-    private fun dp(value: Int): Int {
-        return (value * resources.displayMetrics.density).toInt()
+    private fun addDurationRow(
+        parent: LinearLayout,
+        name: String,
+        durationMinutes: Int
+    ){
+        val row = LinearLayout(this).apply{
+            orientation = LinearLayout.HORIZONTAL
+
+            layoutParams =
+                LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    dp(42)
+                )
+            gravity = android.view.Gravity.CENTER_VERTICAL
+        }
+
+        val habitName = TextView(this).apply{
+            text = name
+            textSize = 16f
+            setTextColor(Color.parseColor("#435B50"))
+
+            setTypeface(null, Typeface.BOLD)
+
+            layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
+        }
+
+        val habitDuration = TextView(this).apply{
+            text = formatDuration(durationMinutes)
+            textSize = 16f
+            setTextColor(Color.parseColor("#435B50"))
+
+            setTypeface(null, Typeface.BOLD)
+        }
+        row.addView(habitName)
+        row.addView(habitDuration)
+        parent.addView(row)
+    }
+
+    private fun formatHours(
+        minutes: Int
+    ): String{
+        val hours =
+            minutes / 60.0
+
+        return if(
+            minutes % 60 == 0
+        ) {
+            hours.toInt().toString()
+        } else {
+            String.format(java.util.Locale.getDefault(), "%.1f", hours)
+        }
+    }
+
+    private fun formatDuration(
+        minutes: Int
+    ): String{
+        val hours = minutes / 60
+        val remainingMinutes = minutes % 60
+
+        return when{
+            hours > 0 && remainingMinutes > 0 -> {
+                "$hours hr $remainingMinutes min"
+            }
+            hours == 1 -> {
+                "1 hour"
+            }
+            hours > 1 ->{
+                "$hours hours"
+            }else ->{
+                "$remainingMinutes min"
+            }
+        }
+    }
+
+    private fun dp(value: Int):Int{
+        return(value * resources.displayMetrics.density).toInt()
     }
 }
