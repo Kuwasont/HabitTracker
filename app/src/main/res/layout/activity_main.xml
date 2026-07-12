@@ -41,7 +41,7 @@
         android:fontFamily="@font/capriola_regular"
         android:padding="8dp"
         android:text="Logout"
-        android:textColor="#D32F2F"
+        android:textColor="#2c6c55"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
