@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,7 +8,10 @@
     android:layout_height="match_parent"
     android:background="#F9F4E7">
 
-    <!-- Back -->
+
+    <!-- Back Button -->
+
+
     <ImageView
         android:id="@+id/imgBack"
         android:layout_width="22dp"
@@ -18,7 +22,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
+
     <!-- Leaf -->
+
+
     <ImageView
         android:id="@+id/imgLeaf"
         android:layout_width="250dp"
@@ -26,27 +33,31 @@
         android:layout_marginTop="-47dp"
         android:layout_marginEnd="-80dp"
         android:rotation="-25"
-        android:scaleType="fitCenter"
         android:src="@drawable/leaf"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+
     <!-- Title -->
+
+
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
         android:layout_marginTop="55dp"
-        android:fontFamily="@font/capriola_regular"
         android:text="New Habit"
         android:textColor="#7FA48A"
         android:textSize="35sp"
         android:textStyle="bold"
+        android:fontFamily="@font/capriola_regular"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
+
     <!-- White Card -->
+
 
     <LinearLayout
         android:id="@+id/layoutHabitContainer"
@@ -63,172 +74,314 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Habit Name -->
+
+        <!-- Habit -->
+
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Habit Name"
-            app:boxBackgroundMode="outline"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp">
+            android:hint="Habit"
+            app:boxStrokeColor="#8DB493"
+            app:hintTextColor="#8DB493"
+            app:endIconTint="#8DB493">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etHabitName"
+
+            <AutoCompleteTextView
+                android:id="@+id/dropHabit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/capriola_regular"/>
+                android:fontFamily="@font/capriola_regular"
+                android:inputType="none"
+                android:textColor="#555555"
+                android:textColorHint="#8DB493"/>
+
 
         </com.google.android.material.textfield.TextInputLayout>
 
+
         <!-- Habit Color -->
+
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:fontFamily="@font/capriola_regular"
+            android:layout_marginTop="20dp"
             android:text="Habit Color"
-            android:textColor="#777777"
+            android:textStyle="bold"
+            android:textColor="#666666"
             android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:fontFamily="@font/capriola_regular"/>
+
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="12dp"
             android:orientation="horizontal">
+
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardGreen"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="10dp"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_marginEnd="12dp"
                 app:cardBackgroundColor="#B8E3C4"
-                app:cardCornerRadius="15dp"
-                app:strokeWidth="0dp"
-                app:strokeColor="@android:color/transparent"/>
+                app:cardCornerRadius="17dp"/>
+
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardOrange"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="10dp"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_marginEnd="12dp"
                 app:cardBackgroundColor="#FFD3A8"
-                app:cardCornerRadius="15dp"
-                app:strokeWidth="0dp"
-                app:strokeColor="@android:color/transparent"/>
+                app:cardCornerRadius="17dp"/>
+
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardBlue"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="10dp"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_marginEnd="12dp"
                 app:cardBackgroundColor="#B7D7FF"
-                app:cardCornerRadius="15dp"
-                app:strokeWidth="0dp"
-                app:strokeColor="@android:color/transparent"/>
+                app:cardCornerRadius="17dp"/>
+
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardPink"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="10dp"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_marginEnd="12dp"
                 app:cardBackgroundColor="#FFD6E8"
-                app:cardCornerRadius="15dp"
-                app:strokeWidth="0dp"
-                app:strokeColor="@android:color/transparent"/>
+                app:cardCornerRadius="17dp"/>
+
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardPurple"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
                 app:cardBackgroundColor="#DDB8F4"
-                app:cardCornerRadius="15dp"
-                app:strokeWidth="0dp"
-                app:strokeColor="@android:color/transparent"/>
+                app:cardCornerRadius="17dp"/>
+
 
         </LinearLayout>
 
-        <!-- Hours -->
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        <!-- Frequency -->
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/capriola_regular"
+            android:text="Frequency"
+            android:textColor="#666666"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+
+
+        <LinearLayout
+            android:id="@+id/layoutFrequency"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_frequency"
+            android:orientation="horizontal"
+            android:padding="4dp">
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDaily"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fontFamily="@font/capriola_regular"
+                android:text="Daily"
+                android:textAllCaps="false"
+                android:textColor="#555555"
+                android:textSize="14sp"
+                app:backgroundTint="#F9F4E7"
+                app:cornerRadius="18dp"
+                app:elevation="0dp"
+                app:strokeWidth="0dp"/>
+
+
+            <Space
+                android:layout_width="4dp"
+                android:layout_height="match_parent"/>
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnWeekly"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fontFamily="@font/capriola_regular"
+                android:text="Weekly"
+                android:textAllCaps="false"
+                android:textColor="#8A8A8A"
+                android:textSize="14sp"
+                app:backgroundTint="#C9DFD1"
+                app:cornerRadius="18dp"
+                app:elevation="0dp"
+                app:strokeWidth="0dp"/>
+
+
+        </LinearLayout>
+
+
+        <!-- Week Days -->
+
+
+        <TextView
+            android:id="@+id/tvWeekDays"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/capriola_regular"
+            android:text="Days"
+            android:textColor="#666666"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+
+        <LinearLayout
+            android:id="@+id/layoutDays"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:hint="Hours per Month"
-            app:boxBackgroundMode="outline"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp">
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="gone">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etTargetHours"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:fontFamily="@font/capriola_regular"/>
 
-        </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:id="@+id/tvMon"
+                android:layout_width="36dp"
+                android:layout_height="34dp"
+                android:layout_marginEnd="3dp"
+                android:background="@drawable/bg_day_unselected"
+                android:fontFamily="@font/capriola_regular"
+                android:gravity="center"
+                android:text="M"
+                android:textColor="#8DB493"
+                android:textSize="12sp"/>
 
-        <!-- Times -->
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:hint="Times per Month"
-            app:boxBackgroundMode="outline"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp">
+            <TextView
+                android:id="@+id/tvTue"
+                android:layout_width="36dp"
+                android:layout_height="34dp"
+                android:layout_marginEnd="3dp"
+                android:background="@drawable/bg_day_unselected"
+                android:fontFamily="@font/capriola_regular"
+                android:gravity="center"
+                android:text="T"
+                android:textColor="#8DB493"
+                android:textSize="12sp"/>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etTargetTimes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:fontFamily="@font/capriola_regular"/>
 
-        </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:id="@+id/tvWed"
+                android:layout_width="36dp"
+                android:layout_height="34dp"
+                android:layout_marginEnd="3dp"
+                android:background="@drawable/bg_day_unselected"
+                android:fontFamily="@font/capriola_regular"
+                android:gravity="center"
+                android:text="W"
+                android:textColor="#8DB493"
+                android:textSize="12sp"/>
+
+
+            <TextView
+                android:id="@+id/tvThu"
+                android:layout_width="40dp"
+                android:layout_height="34dp"
+                android:layout_marginEnd="3dp"
+                android:background="@drawable/bg_day_unselected"
+                android:fontFamily="@font/capriola_regular"
+                android:gravity="center"
+                android:text="TH"
+                android:textColor="#8DB493"
+                android:textSize="11sp"/>
+
+
+            <TextView
+                android:id="@+id/tvFri"
+                android:layout_width="36dp"
+                android:layout_height="34dp"
+                android:layout_marginEnd="3dp"
+                android:background="@drawable/bg_day_unselected"
+                android:fontFamily="@font/capriola_regular"
+                android:gravity="center"
+                android:text="F"
+                android:textColor="#8DB493"
+                android:textSize="12sp"/>
+
+
+            <TextView
+                android:id="@+id/tvSat"
+                android:layout_width="36dp"
+                android:layout_height="34dp"
+                android:layout_marginEnd="3dp"
+                android:background="@drawable/bg_day_unselected"
+                android:fontFamily="@font/capriola_regular"
+                android:gravity="center"
+                android:text="S"
+                android:textColor="#8DB493"
+                android:textSize="12sp"/>
+
+
+            <TextView
+                android:id="@+id/tvSun"
+                android:layout_width="36dp"
+                android:layout_height="34dp"
+                android:background="@drawable/bg_day_unselected"
+                android:fontFamily="@font/capriola_regular"
+                android:gravity="center"
+                android:text="S"
+                android:textColor="#8DB493"
+                android:textSize="12sp"/>
+        </LinearLayout>
+
 
         <!-- Reminder -->
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="24dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
+
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="@font/capriola_regular"
-                android:text="Reminder"
+                android:text="Reminder Time"
                 android:textColor="#555555"
-                android:textSize="18sp"/>
+                android:textSize="16sp" />
+
 
             <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/swReminder"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:thumbTint="#FFFFFF"
-                app:trackTint="#D8E7D7"/>
+                android:layout_height="wrap_content" />
+
 
         </LinearLayout>
 
+
     </LinearLayout>
 
-    <!-- Create Button -->
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnCreateHabit"
@@ -245,7 +398,8 @@
         app:backgroundTint="#8DB493"
         app:cornerRadius="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

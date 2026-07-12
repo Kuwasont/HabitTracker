@@ -68,7 +68,7 @@
             <!-- Stat Cards Row -->
             <LinearLayout
                 android:id="@+id/statCards"
-                android:layout_width="match_parent"
+                android:layout_width="315dp"
                 android:layout_height="88dp"
                 android:layout_marginTop="30dp"
                 android:orientation="horizontal"
@@ -139,7 +139,7 @@
                     android:gravity="center"
                     android:orientation="vertical"
                     android:background="@drawable/bg_round_24"
-                    android:backgroundTint="#F9D8BE">
+                    android:backgroundTint="#D9E8D0">
 
                     <TextView
                         android:id="@+id/txtOverall"
@@ -153,12 +153,13 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Remaining"
                         android:fontFamily="@font/dongle_bold"
+                        android:text="Overall"
                         android:textColor="#5F5A5A"
                         android:textSize="17sp"
                         android:textStyle="bold" />
                 </LinearLayout>
+
             </LinearLayout>
 
 
