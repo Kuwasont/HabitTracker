@@ -29,6 +29,10 @@ class MainActivity : AppCompatActivity() {
 
     private var habitsListener: ListenerRegistration? = null
 
+    private var currentHabits = listOf<Habit>()
+    private var completedHabits = listOf<Habit>()
+    private var showingCompleted = false
+
     data class Habit(
         val id: String,
         val name: String,
@@ -58,6 +62,26 @@ class MainActivity : AppCompatActivity() {
 
         binding.rvCurrentHabits.adapter =
             currentAdapter
+
+        binding.tvCurrent.setOnClickListener {
+
+            showingCompleted = false
+
+            currentAdapter.submitList(currentHabits)
+
+            binding.tvCurrent.setBackgroundResource(R.drawable.habit_selected)
+            binding.tvCompleted.background = null
+        }
+
+        binding.tvCompleted.setOnClickListener {
+
+            showingCompleted = true
+
+            currentAdapter.submitList(completedHabits)
+
+            binding.tvCompleted.setBackgroundResource(R.drawable.habit_selected)
+            binding.tvCurrent.background = null
+        }
 
 
         binding.imgStats.setOnClickListener {
@@ -148,17 +172,21 @@ class MainActivity : AppCompatActivity() {
                     )
                 }
 
-                val currentHabits =
+                currentHabits =
                     habits.filter {
                         it.goal == 0 || it.done < it.goal
                     }
 
-                val completedHabits =
+                completedHabits =
                     habits.filter {
                         it.goal > 0 && it.done >= it.goal
                     }
 
-                currentAdapter.submitList(currentHabits)
+                if (showingCompleted) {
+                    currentAdapter.submitList(completedHabits)
+                } else {
+                    currentAdapter.submitList(currentHabits)
+                }
 
                 binding.rvCurrentHabits.visibility =
                     if (currentHabits.isEmpty())
@@ -167,16 +195,11 @@ class MainActivity : AppCompatActivity() {
                         View.VISIBLE
 
                 binding.tvEmptyCurrent.visibility =
-                    if (currentHabits.isEmpty())
-                        View.VISIBLE
-                    else
-                        View.GONE
-
-                binding.tvCompleted.visibility =
-                    if (completedHabits.isEmpty())
-                        View.GONE
-                    else
-                        View.VISIBLE
+                    if (showingCompleted) {
+                        if (completedHabits.isEmpty()) View.VISIBLE else View.GONE
+                    } else {
+                        if (currentHabits.isEmpty()) View.VISIBLE else View.GONE
+                    }
 
             }
     }
