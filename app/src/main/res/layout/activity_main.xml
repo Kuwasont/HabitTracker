@@ -67,7 +67,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="Current Habits"
-            android:textSize="16sp"
+            android:textSize="20sp"
             android:textColor="#555555"
             android:fontFamily="@font/dongle_regular"
             android:paddingStart="15dp"
@@ -83,7 +83,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="Completed Habits"
-            android:textSize="16sp"
+            android:textSize="20sp"
             android:textColor="#555555"
             android:fontFamily="@font/dongle_regular"
             android:paddingStart="15dp"
@@ -105,29 +105,49 @@
         android:textSize="17sp"
         android:fontFamily="@font/capriola_regular"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/tvCurrent"
+        app:layout_constraintTop_toBottomOf="@id/layoutTabs"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvCurrentHabits"
         android:layout_width="0dp"
-        android:layout_height="170dp"
+        android:layout_height="0dp"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="40dp"
         android:layout_marginTop="18dp"
         android:clipToPadding="false"
-        android:paddingBottom="12dp"
+        android:paddingBottom="125dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:overScrollMode="never"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@id/layoutTabs"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCompletedHabits"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginTop="18dp"
+        android:clipToPadding="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingBottom="125dp"
+        android:overScrollMode="never"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/layoutTabs"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"  />
+
     <FrameLayout
         android:id="@+id/bottom_navigation_container"
         android:layout_width="match_parent"
         android:layout_height="115dp"
+        android:clickable="true"
+        android:elevation="12dp"
+        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <RelativeLayout

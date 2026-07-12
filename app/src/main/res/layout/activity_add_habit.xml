@@ -310,7 +310,96 @@
                 android:textSize="12sp"/>
         </LinearLayout>
 
-        <!-- Reminder -->
+        <!-- Start/End Time -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <!-- Start Time Group -->
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/capriola_regular"
+                    android:text="From"
+                    android:textColor="#7F8A84"
+                    android:textSize="12sp" />
+
+                <EditText
+                    android:id="@+id/etStartTime"
+                    android:layout_width="0dp"
+                    android:layout_height="38dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/habit_selected"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    app:cardCornerRadius="2dp"
+                    android:fontFamily="@font/capriola_regular"
+                    android:gravity="center"
+                    android:inputType="none"
+                    android:minWidth="0dp"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:textColor="#555555"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <!-- End Time Group -->
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/capriola_regular"
+                    android:text="To"
+                    android:textColor="#7F8A84"
+                    android:textSize="12sp" />
+
+                <EditText
+                    android:id="@+id/etEndTime"
+                    android:layout_width="0dp"
+                    android:layout_height="38dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/habit_selected"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:fontFamily="@font/capriola_regular"
+                    android:gravity="center"
+                    android:inputType="none"
+                    android:minWidth="0dp"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:textColor="#555555"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    <!-- Reminder -->
 
         <LinearLayout
             android:layout_width="match_parent"

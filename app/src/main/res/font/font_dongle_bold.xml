@@ -3,5 +3,5 @@
     <font
         android:fontStyle="normal"
         android:fontWeight="700"
-        android:font="@font/dongle_bold_file" />
+        android:font="@font/dongle_font" />
 </font-family>

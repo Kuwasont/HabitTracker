@@ -96,7 +96,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/dongle_bold"
+                        android:fontFamily="@font/font_dongle_bold"
                         android:text="Remaining Hours"
                         android:textColor="#5F5A5A"
                         android:textSize="17sp"
@@ -125,7 +125,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/dongle_bold"
+                        android:fontFamily="@font/font_dongle_bold"
                         android:text="Completed"
                         android:textColor="#5F5A5A"
                         android:textSize="17sp"
@@ -154,7 +154,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Remaining"
-                        android:fontFamily="@font/dongle_bold"
+                        android:fontFamily="@font/font_dongle_bold"
                         android:textColor="#5F5A5A"
                         android:textSize="17sp"
                         android:textStyle="bold" />
