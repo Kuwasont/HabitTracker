@@ -43,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
-                android:fontFamily="@font/dongle_bold"
+                android:fontFamily="@font/font_dongle_bold"
                 android:text="Log In"
                 android:textColor="@color/green"
                 android:textSize="75dp" />
@@ -100,7 +100,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Register"
-                    android:fontFamily="@font/dongle_bold"
+                    android:fontFamily="@font/font_dongle_bold"
                     android:textSize="25sp"
                     android:textColor="@color/darkgreen"
                     android:textStyle="bold" />

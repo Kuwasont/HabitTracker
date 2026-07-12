@@ -43,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
-                android:fontFamily="@font/dongle_bold"
+                android:fontFamily="@font/font_dongle_bold"
                 android:text="Register"
                 android:textColor="@color/green"
                 android:textSize="75dp" />
