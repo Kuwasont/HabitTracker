@@ -1,9 +1,12 @@
 package com.example.habittracker
 
+import android.Manifest
 import android.app.TimePickerDialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
@@ -15,13 +18,13 @@ import com.google.android.material.card.MaterialCardView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 import java.util.Calendar
 import java.util.Locale
 
 class AddHabitActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddHabitBinding
-
     private val auth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
 
@@ -29,98 +32,55 @@ class AddHabitActivity : AppCompatActivity() {
     private var frequency = "Daily"
     private var startTime = ""
     private var endTime = ""
-
     private var startTimeMinutes: Int? = null
     private var endTimeMinutes: Int? = null
-
     private val selectedDays = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityAddHabitBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.imgBack.setOnClickListener {
-            finish()
-        }
+        binding.imgBack.setOnClickListener { finish() }
 
-        // -------------------------
-        // Habit Dropdown
-        // -------------------------
+        requestNotificationPermission()
+        saveFcmToken()
 
-        val habits = listOf(
-            "Reading",
-            "Running",
-            "Exercise",
-            "Cycling",
-            "Cooking",
-            "Studying",
-            "Meditation",
-            "Drink Water",
-            "Walking",
-            "Sleep Early"
-        )
-
-        val adapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_dropdown_item_1line,
-            habits
-        )
-
+        // Dropdown Setup
+        val habits = listOf("Reading", "Running", "Exercise", "Cycling", "Cooking", "Studying", "Meditation", "Drink Water", "Walking", "Sleep Early")
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, habits)
         binding.dropHabit.setAdapter(adapter)
 
-        // -------------------------
-        // Frequency
-        // -------------------------
-
+        // Frequency Initial State
         frequency = "Daily"
-
         binding.layoutDays.visibility = View.GONE
         binding.tvWeekDays.visibility = View.GONE
-
-        binding.btnDaily.backgroundTintList =
-            ColorStateList.valueOf(Color.parseColor("#F9F4E7"))
-        binding.btnWeekly.backgroundTintList =
-            ColorStateList.valueOf(Color.parseColor("#C9DFD1"))
-
+        binding.btnDaily.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#F9F4E7"))
+        binding.btnWeekly.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#C9DFD1"))
         binding.btnDaily.setTextColor(Color.parseColor("#555555"))
         binding.btnWeekly.setTextColor(Color.parseColor("#8A8A8A"))
 
         binding.btnDaily.setOnClickListener {
             frequency = "Daily"
-
             binding.layoutDays.visibility = View.GONE
             binding.tvWeekDays.visibility = View.GONE
-
-            binding.btnDaily.backgroundTintList =
-                ColorStateList.valueOf(Color.parseColor("#F9F4E7"))
-            binding.btnWeekly.backgroundTintList =
-                ColorStateList.valueOf(Color.parseColor("#C9DFD1"))
-
+            binding.btnDaily.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#F9F4E7"))
+            binding.btnWeekly.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#C9DFD1"))
             binding.btnDaily.setTextColor(Color.parseColor("#555555"))
             binding.btnWeekly.setTextColor(Color.parseColor("#8A8A8A"))
         }
 
         binding.btnWeekly.setOnClickListener {
             frequency = "Weekly"
-
             binding.layoutDays.visibility = View.VISIBLE
             binding.tvWeekDays.visibility = View.VISIBLE
-
-            binding.btnWeekly.backgroundTintList =
-                ColorStateList.valueOf(Color.parseColor("#F9F4E7"))
-            binding.btnDaily.backgroundTintList =
-                ColorStateList.valueOf(Color.parseColor("#C9DFD1"))
-
+            binding.btnWeekly.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#F9F4E7"))
+            binding.btnDaily.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#C9DFD1"))
             binding.btnWeekly.setTextColor(Color.parseColor("#555555"))
             binding.btnDaily.setTextColor(Color.parseColor("#8A8A8A"))
         }
 
-        // -------------------------
-        // Week Days
-        // -------------------------
-
+        // Week Days Click Listeners
         binding.tvMon.setOnClickListener { toggleDay(binding.tvMon, "Mon") }
         binding.tvTue.setOnClickListener { toggleDay(binding.tvTue, "Tue") }
         binding.tvWed.setOnClickListener { toggleDay(binding.tvWed, "Wed") }
@@ -129,49 +89,45 @@ class AddHabitActivity : AppCompatActivity() {
         binding.tvSat.setOnClickListener { toggleDay(binding.tvSat, "Sat") }
         binding.tvSun.setOnClickListener { toggleDay(binding.tvSun, "Sun") }
 
-        // -------------------------
-        // Color Picker
-        // -------------------------
-
+        // Color Picker Click Listeners
         highlightSelected(binding.cardGreen)
+        binding.cardGreen.setOnClickListener { selectedColor = "#B8E3C4"; highlightSelected(binding.cardGreen) }
+        binding.cardOrange.setOnClickListener { selectedColor = "#FFD3A8"; highlightSelected(binding.cardOrange) }
+        binding.cardBlue.setOnClickListener { selectedColor = "#B7D7FF"; highlightSelected(binding.cardBlue) }
+        binding.cardPink.setOnClickListener { selectedColor = "#FFD6E8"; highlightSelected(binding.cardPink) }
+        binding.cardPurple.setOnClickListener { selectedColor = "#DDB8F4"; highlightSelected(binding.cardPurple) }
 
-        binding.cardGreen.setOnClickListener {
-            selectedColor = "#B8E3C4"
-            highlightSelected(binding.cardGreen)
+        binding.etStartTime.setOnClickListener { showTimePicker(true) }
+        binding.etEndTime.setOnClickListener { showTimePicker(false) }
+        binding.btnCreateHabit.setOnClickListener { saveHabitToFirestore() }
+    }
+
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), NOTIFICATION_PERMISSION_CODE)
         }
+    }
 
-        binding.cardOrange.setOnClickListener {
-            selectedColor = "#FFD3A8"
-            highlightSelected(binding.cardOrange)
-        }
+    private fun saveFcmToken() {
 
-        binding.cardBlue.setOnClickListener {
-            selectedColor = "#B7D7FF"
-            highlightSelected(binding.cardBlue)
-        }
+        FirebaseMessaging.getInstance()
+            .token
+            .addOnSuccessListener { token ->
 
-        binding.cardPink.setOnClickListener {
-            selectedColor = "#FFD6E8"
-            highlightSelected(binding.cardPink)
-        }
+                android.util.Log.d(
+                    "FCM_TOKEN",
+                    token
+                )
+            }
+            .addOnFailureListener { error ->
 
-        binding.cardPurple.setOnClickListener {
-            selectedColor = "#DDB8F4"
-            highlightSelected(binding.cardPurple)
-        }
-
-        binding.etStartTime.setOnClickListener {
-            showTimePicker(true)
-        }
-
-
-        binding.etEndTime.setOnClickListener {
-            showTimePicker(false)
-        }
-
-        binding.btnCreateHabit.setOnClickListener {
-            saveHabitToFirestore()
-        }
+                android.util.Log.e(
+                    "FCM_TOKEN",
+                    "Failed to get token",
+                    error
+                )
+            }
     }
 
     private fun showTimePicker(selectingStartTime: Boolean) {
@@ -179,31 +135,22 @@ class AddHabitActivity : AppCompatActivity() {
         val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
         val currentMinute = calendar.get(Calendar.MINUTE)
 
-        val timePicker = TimePickerDialog(
-            this,
-            { _, selectedHour, selectedMinute ->
+        val timePicker = TimePickerDialog(this, { _, selectedHour, selectedMinute ->
+            val selectedTotalMinutes = selectedHour * 60 + selectedMinute
+            val formattedTime = formatTime(selectedHour, selectedMinute)
 
-                val selectedTotalMinutes = selectedHour * 60 + selectedMinute
-                val formattedTime = formatTime(selectedHour, selectedMinute)
-
-                if (selectingStartTime) {
-
-                    startTime = formattedTime
-                    startTimeMinutes = selectedTotalMinutes
-                    binding.etStartTime.setText(formattedTime)
-                } else {
-                    endTime = formattedTime
-                    endTimeMinutes = selectedTotalMinutes
-                    binding.etEndTime.setText(formattedTime)
-                }
-            },
-            currentHour,
-            currentMinute,
-            false
-        )
+            if (selectingStartTime) {
+                startTime = formattedTime
+                startTimeMinutes = selectedTotalMinutes
+                binding.etStartTime.setText(formattedTime)
+            } else {
+                endTime = formattedTime
+                endTimeMinutes = selectedTotalMinutes
+                binding.etEndTime.setText(formattedTime)
+            }
+        }, currentHour, currentMinute, false)
         timePicker.show()
     }
-
 
     private fun formatTime(hour: Int, minute: Int): String {
         val period = if (hour >= 12) "PM" else "AM"
@@ -212,19 +159,11 @@ class AddHabitActivity : AppCompatActivity() {
             hour > 12 -> hour - 12
             else -> hour
         }
-
-        return String.format(
-            Locale.getDefault(),
-            "%02d:%02d %s",
-            displayHour,
-            minute,
-            period
-        )
+        return String.format(Locale.getDefault(), "%02d:%02d %s", displayHour, minute, period)
     }
 
     private fun saveHabitToFirestore() {
         val name = binding.dropHabit.text.toString().trim()
-
         if (name.isEmpty()) {
             Toast.makeText(this, "Please select a habit", Toast.LENGTH_SHORT).show()
             return
@@ -236,7 +175,6 @@ class AddHabitActivity : AppCompatActivity() {
             return
         }
 
-
         if (startTimeMinutes == null) {
             Toast.makeText(this, "Please select start time", Toast.LENGTH_SHORT).show()
             return
@@ -246,9 +184,25 @@ class AddHabitActivity : AppCompatActivity() {
             return
         }
 
+        if (frequency == "Weekly" && selectedDays.isEmpty()) {
+            Toast.makeText(this, "Please select at least one day", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         val startMinutes = startTimeMinutes ?: return
         val endMinutes = endTimeMinutes ?: return
+
+        val reminderAt = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, startMinutes / 60)
+            set(Calendar.MINUTE, startMinutes % 60)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+            add(Calendar.MINUTE, -30)
+
+            if (timeInMillis <= System.currentTimeMillis()) {
+                add(Calendar.DAY_OF_YEAR, 1)
+            }
+        }
 
         val durationMinutes = if (endMinutes >= startMinutes) {
             endMinutes - startMinutes
@@ -256,6 +210,10 @@ class AddHabitActivity : AppCompatActivity() {
             24 * 60 - startMinutes + endMinutes
         }
 
+        if (durationMinutes == 0) {
+            Toast.makeText(this, "Start and end time cannot be the same", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         val habit = hashMapOf(
             "id" to "",
@@ -272,48 +230,30 @@ class AddHabitActivity : AppCompatActivity() {
             "endTimeMinutes" to endMinutes,
             "durationMinutes" to durationMinutes,
             "reminder" to binding.swReminder.isChecked,
+            "reminderEnabled" to binding.swReminder.isChecked,
+            "reminderAt" to if (binding.swReminder.isChecked) reminderAt.time else null,
+            "reminderSent" to false,
             "createdAt" to FieldValue.serverTimestamp()
         )
 
-        db.collection("users")
-            .document(userId)
-            .collection("habits")
-            .add(habit)
+        db.collection("users").document(userId).collection("habits").add(habit)
             .addOnSuccessListener { documentReference ->
                 documentReference.update("id", documentReference.id)
-
-                Toast.makeText(
-                    this,
-                    "Habit created successfully!",
-                    Toast.LENGTH_SHORT
-                ).show()
-
+                Toast.makeText(this, "Habit created successfully!", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
             }
-            .addOnFailureListener { e ->
-                Toast.makeText(
-                    this,
-                    "Error: ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+            .addOnFailureListener { error ->
+                Toast.makeText(this, "Error: ${error.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
     private fun highlightSelected(selected: MaterialCardView) {
-        val cards = listOf(
-            binding.cardGreen,
-            binding.cardOrange,
-            binding.cardBlue,
-            binding.cardPink,
-            binding.cardPurple
-        )
-
+        val cards = listOf(binding.cardGreen, binding.cardOrange, binding.cardBlue, binding.cardPink, binding.cardPurple)
         cards.forEach {
             it.strokeWidth = 0
             it.strokeColor = getColor(android.R.color.transparent)
         }
-
         selected.strokeWidth = 4
         selected.strokeColor = getColor(R.color.darkgreen)
     }
@@ -328,5 +268,9 @@ class AddHabitActivity : AppCompatActivity() {
             view.background = getDrawable(R.drawable.bg_day_selected)
             view.setTextColor(Color.WHITE)
         }
+    }
+
+    companion object {
+        private const val NOTIFICATION_PERMISSION_CODE = 1001
     }
 }
